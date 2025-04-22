@@ -1,5 +1,5 @@
 import { Treino } from "../../models/treino/Treino";
-import { atualizar, buscar, cadastrar, deletar } from "../api";
+import api, {  buscar, deletar } from "../api";
 
 
 
@@ -20,13 +20,32 @@ export const buscarTreinoPorNome = async (nome: string, setDados: Function) => {
 
 // Cadastrar treino
 export const cadastrarTreino = async (dados: Treino, setDados: Function) => {
-  await cadastrar("/treinos", dados, setDados);
+  const treinoMin = {
+    nomeTreino: dados.nomeTreino,
+    descricao: dados.descricao,
+    videoUrl: dados.videoUrl,
+    categoria: { id: dados.categoria.id },
+  };
+
+  const resposta = await api.post("/treinos", treinoMin);
+  setDados(resposta.data);
 };
+
 
 // Atualizar treino
 export const atualizarTreino = async (dados: Treino, setDados: Function) => {
-  await atualizar("/treinos", dados, setDados);
+  const treinoMin = {
+    id: dados.id,
+    nomeTreino: dados.nomeTreino,
+    descricao: dados.descricao,
+    videoUrl: dados.videoUrl,
+    categoria: { id: dados.categoria.id },
+  };
+
+  const resposta = await api.put("/treinos", treinoMin);
+  setDados(resposta.data);
 };
+
 
 // Deletar treino
 export const deletarTreino = async (id: number) => {

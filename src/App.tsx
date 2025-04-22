@@ -5,6 +5,9 @@ import Home from "./pages/home/Home";
 import Usuarios from "./pages/usuarios/Usuario";
 import Categorias from "./pages/categorias/Categorias";
 import Treinos from "./pages/treinos/Treinos";
+import FormularioTreino from "./pages/treinos/FormularioTreino";
+import FormCategoria from "./components/categoria/FormCategoria";
+import FormUsuario from "./components/usuario/FormUsuario";
 
 
 function App(){
@@ -17,8 +20,11 @@ function App(){
               <Route path="/usuarios" element={<Usuarios />} />
               <Route path="/categorias" element={<Categorias />} />
               <Route path="/treinos" element={<Treinos />} />
-       
-          
+              <Route path="/treinos/formulario" element={<FormularioTreino />} />
+              <Route path="/treinos/formulario/:id" element={<FormularioTreino />} />
+              <Route path="/categorias/formulario/:id" element={<FormCategoria />} />
+<Route path="/usuarios/formulario/:id" element={<FormUsuario />} />
+
             </Routes>
           </main>
           <Footer />
