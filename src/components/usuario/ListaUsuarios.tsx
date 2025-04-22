@@ -14,46 +14,70 @@ export default function ListaUsuarios() {
     buscarUsuarios(setUsuarios);
   }, []);
 
-  function excluirUsuario(id: number) {
+  async function excluirUsuario(id?: number) {
+    if (!id) return;
     if (window.confirm("Deseja excluir este usuário?")) {
-      deletarUsuario(id).then(() => buscarUsuarios(setUsuarios));
+      await deletarUsuario(id);
+      await buscarUsuarios(setUsuarios);
     }
   }
 
+  // Função para classificar o IMC
+  function classificarIMC(imc: number) {
+    if (imc < 18.5) return "Abaixo do peso";
+    if (imc < 25) return "Peso normal";
+    if (imc < 30) return "Sobrepeso";
+    if (imc < 35) return "Obesidade I";
+    if (imc < 40) return "Obesidade II";
+    return "Obesidade III";
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      {usuarios.map((usuario) => (
-        <div
-          key={usuario.id}
-          className="bg-white border border-[#f0d9e6] rounded-2xl shadow-lg p-6 flex flex-col justify-between"
-        >
-          <div>
-            <h3 className="text-xl font-bold text-[#C58BAA] mb-1">
-              {usuario.nomeUsuario}
-            </h3>
-            <p className="text-gray-700 text-sm mb-1">Email: {usuario.email}</p>
-            <p className="text-sm text-gray-500 italic mb-3">
-              Altura: {usuario.altura} | Peso: {usuario.peso}
-            </p>
-          </div>
+    <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {usuarios.map((usuario) => {
+        const imc = Number(
+          (usuario.peso / (usuario.altura * usuario.altura)).toFixed(2)
+        );
+        const statusIMC = classificarIMC(imc);
 
-          <div className="flex justify-between gap-2 mt-4">
-            <button
-              onClick={() => navigate(`/usuarios/formulario/${usuario.id}`)}
-              className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition"
-            >
-              ✏️ Editar
-            </button>
+        return (
+          <div
+            key={usuario.id}
+            className="bg-white border border-[#f0d9e6] rounded-2xl shadow-lg p-6 flex flex-col justify-between"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-[#C58BAA] mb-1">
+                {usuario.nomeUsuario}
+              </h3>
+              <p className="text-sm text-gray-600 mb-1">Email: {usuario.email}</p>
+              <p className="text-sm text-gray-600">
+                Peso: {usuario.peso} kg | Altura: {usuario.altura} m
+              </p>
+              <p className="text-sm mt-2">
+                IMC:{" "}
+                <span className="font-bold text-[#C58BAA]">{imc}</span>{" "}
+                - <span className="text-gray-600">{statusIMC}</span>
+              </p>
+            </div>
 
-            <button
-              onClick={() => excluirUsuario(usuario.id)}
-              className="bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg text-sm font-medium transition"
-            >
-              🗑️ Deletar
-            </button>
+            <div className="flex justify-between gap-2 mt-4">
+              <button
+                onClick={() => navigate(`/usuarios/formulario/${usuario.id}`)}
+                className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                ✏️ Editar
+              </button>
+
+              <button
+                onClick={() => excluirUsuario(usuario.id)}
+                className="bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                🗑️ Deletar
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        );
+      })}
+    </section>
   );
 }

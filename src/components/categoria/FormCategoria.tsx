@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { atualizarCategoria, buscarCategoriaPorId, cadastrarCategoria } from "../../services/categoriaService/categoriaService";
+import {
+  atualizarCategoria,
+  buscarCategoriaPorId,
+  cadastrarCategoria,
+} from "../../services/categoriaService/categoriaService";
 import { Categoria } from "../../models/categoria/Categoria";
 
 export default function FormCategoria() {
@@ -34,7 +38,8 @@ export default function FormCategoria() {
         await atualizarCategoria(categoria, () => {});
         alert("Categoria atualizada com sucesso!");
       } else {
-        await cadastrarCategoria(categoria, () => {});
+        const novaCategoria = { ...categoria, id: undefined }; // <== 👈 aqui é o segredo
+        await cadastrarCategoria(novaCategoria, () => {});
         alert("Categoria cadastrada com sucesso!");
       }
 

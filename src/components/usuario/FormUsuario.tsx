@@ -1,31 +1,51 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Usuario } from "../../models/usuario/Usuario";
-import { atualizarUsuario, buscarUsuarioPorId, cadastrarUsuario } from "../../services/usuarioService/usuarioService";
-
+import {
+  atualizarUsuario,
+  buscarUsuarioPorId,
+  cadastrarUsuario,
+} from "../../services/usuarioService/usuarioService";
 
 export default function FormUsuario() {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [usuario, setUsuario] = useState<Usuario>({
-    id: 0,
+    id: undefined as unknown as number,
     nomeUsuario: "",
     email: "",
+    senha: "",
     peso: 0,
     altura: 0,
   });
 
   useEffect(() => {
-    if (id) {
+    if (!id) {
       buscarUsuarioPorId(Number(id), setUsuario);
+    } else {
+      setUsuario({
+        id: 0,
+        nomeUsuario: "",
+        email: "",
+        senha: "",
+        peso: 0,
+        altura: 0,
+      });
     }
   }, [id]);
 
+  // Corrige vírgulas e garante que números sejam tratados corretamente
   function atualizarEstado(e: React.ChangeEvent<HTMLInputElement>) {
+    let valor = e.target.value;
+
+    if (e.target.type === "number") {
+      valor = valor.replace(",", ".");
+    }
+
     setUsuario({
       ...usuario,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.type === "number" ? Number(valor) : valor,
     });
   }
 
@@ -57,6 +77,7 @@ export default function FormUsuario() {
         {id ? "Editar Usuário" : "Cadastrar Usuário"}
       </h2>
 
+      {/* NOME */}
       <div className="mb-4">
         <label className="block text-sm font-semibold text-gray-600">Nome</label>
         <input
@@ -69,6 +90,7 @@ export default function FormUsuario() {
         />
       </div>
 
+      {/* EMAIL */}
       <div className="mb-4">
         <label className="block text-sm font-semibold text-gray-600">Email</label>
         <input
@@ -82,6 +104,20 @@ export default function FormUsuario() {
       </div>
 
       <div className="mb-4">
+  <label className="block text-sm font-semibold text-gray-600">Senha</label>
+  <input
+    type="password"
+    name="senha"
+    value={usuario.senha}
+    onChange={atualizarEstado}
+    className="w-full border border-gray-300 p-2 rounded mt-1"
+    required
+  />
+</div>
+
+
+      {/* PESO */}
+      <div className="mb-4">
         <label className="block text-sm font-semibold text-gray-600">Peso (kg)</label>
         <input
           type="number"
@@ -89,21 +125,26 @@ export default function FormUsuario() {
           value={usuario.peso}
           onChange={atualizarEstado}
           className="w-full border border-gray-300 p-2 rounded mt-1"
+          step="0.1"
+          required
         />
       </div>
 
+      {/* ALTURA */}
       <div className="mb-6">
         <label className="block text-sm font-semibold text-gray-600">Altura (m)</label>
         <input
           type="number"
-          step="0.01"
           name="altura"
           value={usuario.altura}
           onChange={atualizarEstado}
           className="w-full border border-gray-300 p-2 rounded mt-1"
+          step="0.01"
+          required
         />
       </div>
 
+      {/* BOTÃO */}
       <button
         type="submit"
         className="bg-[#C58BAA] text-white px-4 py-2 rounded hover:bg-[#a4457a] transition-colors"
