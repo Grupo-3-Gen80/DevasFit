@@ -1,13 +1,14 @@
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
-import Home from "./pages/home/Home";
 import Usuarios from "./pages/usuarios/Usuario";
 import Categorias from "./pages/categorias/Categorias";
 import Treinos from "./pages/treinos/Treinos";
 import FormularioTreino from "./pages/treinos/FormularioTreino";
 import FormCategoria from "./components/categoria/FormCategoria";
 import FormUsuario from "./components/usuario/FormUsuario";
+import Home from "./pages/home/Home";
 
 
 function App(){
@@ -34,7 +35,3 @@ function App(){
     
     export default App;
     
-
-
-
-
