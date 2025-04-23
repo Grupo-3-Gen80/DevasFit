@@ -6,5 +6,5 @@ export interface Treino {
   nomeTreino: string;
   descricao: string;
   videoUrl: string;
-  categoria: Categoria;
+  categoria?: Categoria;
 }

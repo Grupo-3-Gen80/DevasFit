@@ -9,6 +9,7 @@ export default function Navbar() {
         <li><Link to="/treinos">Treinos</Link></li>
         <li><Link to="/categorias">Categorias</Link></li>
         <li><Link to="/usuarios">Usuários</Link></li>
+        <li><Link to="/resumo-treinos"> Resumo de Treinos</Link></li>
       </ul>
     </nav>
   );

@@ -5,6 +5,7 @@ import {
   buscarUsuarios,
   deletarUsuario,
 } from "../../services/usuarioService/usuarioService";
+import { motion } from "framer-motion";
 
 export default function ListaUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -22,7 +23,6 @@ export default function ListaUsuarios() {
     }
   }
 
-  // Função para classificar o IMC
   function classificarIMC(imc: number) {
     if (imc < 18.5) return "Abaixo do peso";
     if (imc < 25) return "Peso normal";
@@ -41,8 +41,12 @@ export default function ListaUsuarios() {
         const statusIMC = classificarIMC(imc);
 
         return (
-          <div
+          <motion.div
             key={usuario.id}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.02 }}
             className="bg-white border border-[#f0d9e6] rounded-2xl shadow-lg p-6 flex flex-col justify-between"
           >
             <div>
@@ -55,27 +59,29 @@ export default function ListaUsuarios() {
               </p>
               <p className="text-sm mt-2">
                 IMC:{" "}
-                <span className="font-bold text-[#C58BAA]">{imc}</span>{" "}
-                - <span className="text-gray-600">{statusIMC}</span>
+                <span className="font-bold text-[#C58BAA]">{imc}</span> -{" "}
+                <span className="text-gray-600">{statusIMC}</span>
               </p>
             </div>
 
             <div className="flex justify-between gap-2 mt-4">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 onClick={() => navigate(`/usuarios/formulario/${usuario.id}`)}
                 className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 ✏️ Editar
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 onClick={() => excluirUsuario(usuario.id)}
                 className="bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 🗑️ Deletar
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </section>

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Usuario } from "../../models/usuario/Usuario";
+import { Treino } from "../../models/treino/Treino";
 import {
   atualizarUsuario,
   buscarUsuarioPorId,
   cadastrarUsuario,
 } from "../../services/usuarioService/usuarioService";
+import { buscarTreinos } from "../../services/treinoService/treinoService";
 
 export default function FormUsuario() {
   const navigate = useNavigate();
@@ -18,46 +20,48 @@ export default function FormUsuario() {
     senha: "",
     peso: 0,
     altura: 0,
+    treinoIds: [],
   });
 
+  const [treinosDisponiveis, setTreinosDisponiveis] = useState<Treino[]>([]);
+
   useEffect(() => {
-    if (!id) {
-      buscarUsuarioPorId(Number(id), setUsuario);
-    } else {
-      setUsuario({
-        id: 0,
-        nomeUsuario: "",
-        email: "",
-        senha: "",
-        peso: 0,
-        altura: 0,
+    buscarTreinos(setTreinosDisponiveis);
+
+    if (id) {
+      buscarUsuarioPorId(Number(id), (usuarioCarregado: Usuario) => {
+        const treinoIds = usuarioCarregado.treinos?.map(t => t.id!) || [];
+        setUsuario({ ...usuarioCarregado, treinoIds });
       });
     }
   }, [id]);
 
-  // Corrige vírgulas e garante que números sejam tratados corretamente
   function atualizarEstado(e: React.ChangeEvent<HTMLInputElement>) {
     let valor = e.target.value;
-
-    if (e.target.type === "number") {
-      valor = valor.replace(",", ".");
-    }
-
+    if (e.target.type === "number") valor = valor.replace(",", ".");
     setUsuario({
       ...usuario,
       [e.target.name]: e.target.type === "number" ? Number(valor) : valor,
     });
   }
 
+  function atualizarTreinosSelecionados(e: React.ChangeEvent<HTMLSelectElement>) {
+    const ids = Array.from(e.target.selectedOptions, opt => Number(opt.value));
+    setUsuario({ ...usuario, treinoIds: ids });
+  }
+
   async function enviarFormulario(e: React.FormEvent) {
     e.preventDefault();
-
     try {
+      const payload = {
+        ...usuario,
+  treinos: usuario.treinoIds?.map(id => ({ id })) as unknown as Treino[]
+};
       if (id) {
-        await atualizarUsuario(usuario, () => {});
+        await atualizarUsuario(payload, () => {});
         alert("Usuário atualizado com sucesso!");
       } else {
-        await cadastrarUsuario(usuario, () => {});
+        await cadastrarUsuario(payload, () => {});
         alert("Usuário cadastrado com sucesso!");
       }
 
@@ -103,18 +107,18 @@ export default function FormUsuario() {
         />
       </div>
 
+      {/* SENHA */}
       <div className="mb-4">
-  <label className="block text-sm font-semibold text-gray-600">Senha</label>
-  <input
-    type="password"
-    name="senha"
-    value={usuario.senha}
-    onChange={atualizarEstado}
-    className="w-full border border-gray-300 p-2 rounded mt-1"
-    required
-  />
-</div>
-
+        <label className="block text-sm font-semibold text-gray-600">Senha</label>
+        <input
+          type="password"
+          name="senha"
+          value={usuario.senha}
+          onChange={atualizarEstado}
+          className="w-full border border-gray-300 p-2 rounded mt-1"
+          required
+        />
+      </div>
 
       {/* PESO */}
       <div className="mb-4">
@@ -131,7 +135,7 @@ export default function FormUsuario() {
       </div>
 
       {/* ALTURA */}
-      <div className="mb-6">
+      <div className="mb-4">
         <label className="block text-sm font-semibold text-gray-600">Altura (m)</label>
         <input
           type="number"
@@ -144,6 +148,24 @@ export default function FormUsuario() {
         />
       </div>
 
+      {/* TREINOS */}
+      <div className="mb-6">
+        <label className="block text-sm font-semibold text-gray-600">Treinos</label>
+        <select
+          multiple
+          name="treinos"
+          value={usuario.treinoIds?.map(String)}
+          onChange={atualizarTreinosSelecionados}
+          className="w-full border border-gray-300 p-2 rounded mt-1"
+        >
+          {treinosDisponiveis.map((treino) => (
+            <option key={treino.id} value={treino.id}>
+              {treino.nomeTreino}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* BOTÃO */}
       <button
         type="submit"
@@ -154,3 +176,4 @@ export default function FormUsuario() {
     </form>
   );
 }
+

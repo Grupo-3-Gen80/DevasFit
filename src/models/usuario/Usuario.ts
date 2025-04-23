@@ -1,3 +1,5 @@
+import { Treino } from "../treino/Treino";
+
 export interface Usuario {
     id?: number;
     nomeUsuario: string;
@@ -5,5 +7,8 @@ export interface Usuario {
     senha: string;
     peso: number;
     altura: number;
+    treinos?: Treino[];
+
+    treinoIds?: number[];
   }
   
