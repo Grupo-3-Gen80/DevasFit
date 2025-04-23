@@ -53,7 +53,7 @@ export default function FormCategoria() {
   return (
     <form
       onSubmit={enviarFormulario}
-      className="bg-white p-6 rounded-xl shadow-md max-w-xl mx-auto"
+      className="bg-white p-6 rounded-xl shadow-md max-w-xl mx-auto mt-4"
     >
       <h2 className="text-2xl font-bold text-[#C58BAA] mb-4">
         {id ? "Editar Categoria" : "Cadastrar Categoria"}
